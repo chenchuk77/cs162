@@ -61,16 +61,19 @@ int cmd_exit(unused struct tokens *tokens) {
   exit(0);
 }
 
-/* Change CWD */
+/* Show CWD */
 int cmd_pwd(unused struct tokens *tokens) {
-  const char* s = getenv("PWD");
-  printf("PWD :%s\n",(s!=NULL)? s : "getenv returned NULL");
+  char cwd[1024];
+  getcwd(cwd, sizeof(cwd));
+  printf("PWD :%s\n", cwd);
   return 1;
 }
 
 /* Change CWD */
 int cmd_cd(unused struct tokens *tokens) {
-  printf("TODO: implement cd, %s", tokens);
+  // 1 means first arg ( 0=program )
+  char *target_directory = tokens_get_token(tokens, 1);
+  chdir (target_directory);
   return 1;
 }
 
