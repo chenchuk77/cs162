@@ -131,8 +131,31 @@ int main(unused int argc, unused char *argv[]) {
     if (fundex >= 0) {
       cmd_table[fundex].fun(tokens);
     } else {
-      /* REPLACE this to run commands as programs. */
-      fprintf(stdout, "This shell doesn't know how to run programs.\n");
+      ///* REPLACE this to run commands as programs. */
+      //fprintf(stdout, "This shell doesn't know how to run programs.\n");
+      
+      // progname received: forking a child to run the progname
+ 
+      char *args[] = {"/bin/echo", "hello"};
+      char *envs[] = { NULL };
+
+      pid_t pid = fork();
+      if ( pid == -1 ){ /* error */
+      } else if ( pid > 0 ){
+        // parent
+        int status;
+        fprintf(stdout, "parent waiting...\n");
+        waitpid(pid, &status, 0);
+        fprintf(stdout, "parent awaken.\n");
+      } else {
+        fprintf(stdout, "child started.\n");
+        // child
+        execve(*args, args, envs);
+        //execve(args[0], args, envs); // same
+        fprintf(stdout, "child done.\n");
+        //_exit(EXIT_FAILURE);
+      }
+      // fprintf(stdout, ".\n");
     }
 
     if (shell_is_interactive)
